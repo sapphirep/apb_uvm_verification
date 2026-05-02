@@ -1,19 +1,26 @@
+import uvm_pkg::*;
+`include "uvm_macros.svh"
+
 module test_top;
   timeunit 1ns/1ps;
 
-  import uvm_pkg::*;
-  `include "uvm_macros.svh"
+  localparam APB_ADDR_WITDH = 16;
+  localparam APB_DATA_WIDTH = 32;
 
   logic pclk;
   logic preset_n;
   logic hw_ctl;
 
-  apb_interface apb_if (
+  apb_interface #(
+    .ADDR_WIDTH(APB_ADDR_WITDH), .DATA_WIDTH(APB_DATA_WIDTH)
+  ) apb_if (
     .pclk(pclk), 
     .preset_n(preset_n)
   );
 
-  apb_slave apb_slave (
+  apb_slave #(
+    .ADDR_WIDTH(APB_ADDR_WITDH), .DATA_WIDTH(APB_DATA_WIDTH)
+  ) apb_slave_dut (
     .pclk      (apb_if.pclk    ),
     .preset_n  (apb_if.preset_n),
     .i_paddr   (apb_if.paddr   ),
@@ -32,7 +39,7 @@ module test_top;
   initial begin
     pclk <= 0;
     #10ns;
-    forever #5ns pclk = ~pclk;
+    forever #5ns pclk = ~pclk; // 100MHz clock
   end
 
   initial begin
@@ -49,6 +56,11 @@ module test_top;
     $fsdbDumpvars("+fsdbfile+waves.fsdb");
     $fsdbDumpSVA("+fsdbfile+waves.fsdb"); // Dump SVA
     $fsdbDumpMDA("+fsdbfile+waves.fsdb"); // Dump multi-dimensional array
+  end
+
+  initial begin
+    uvm_config_db#(virtual apb_interface)::set(null, "uvm_test_top.*", "apb_master_if", apb_if);
+    run_test();
   end
 
 endmodule

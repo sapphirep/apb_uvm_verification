@@ -2,7 +2,7 @@
 SHELL      := /bin/bash
 TOP        := test_top
 FLIST      := flist.f
-TEST       ?= smoke_test
+TEST       ?= apb_master_base_test
 SEED       ?= $(shell echo $$RANDOM)
 VCS_OPTS   := -full64 -sverilog -timescale=1ns/1ps \
               +define+UVM_NO_DEPRECATED \
