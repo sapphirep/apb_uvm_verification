@@ -10,7 +10,7 @@ VCS_OPTS   := -full64 -sverilog -timescale=1ns/1ps \
 			  -debug_pp -kdb +fsdb+all=on +vpi +v2k
 
 SIMV_OPTS  := +UVM_TESTNAME=$(TEST) \
-              +UVM_VERBOSITY=UVM_MEDIUM \
+              +UVM_VERBOSITY=UVM_LOW \
               +ntb_random_seed=$(SEED) \
               -l $(TEST)_$(SEED).log
 

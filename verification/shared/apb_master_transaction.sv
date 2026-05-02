@@ -1,3 +1,6 @@
+`ifndef GUARD__APB_MASTER_TRANSACTION_SV
+`define GUARD__APB_MASTER_TRANSACTION_SV
+
 class apb_master_transaction extends uvm_sequence_item;
   `uvm_object_utils(apb_master_transaction)
 
@@ -62,3 +65,5 @@ function string apb_master_transaction::convert2string();
     op.name, paddr, data
   );
 endfunction
+
+`endif

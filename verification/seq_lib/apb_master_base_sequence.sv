@@ -1,3 +1,6 @@
+`ifndef GUARD__APB_MASTER_BASE_SEQUENCE_SV
+`define GUARD__APB_MASTER_BASE_SEQUENCE_SV
+
 class apb_master_base_sequence extends uvm_sequence#(apb_master_transaction);
   `uvm_object_utils(apb_master_base_sequence)
 
@@ -15,3 +18,5 @@ class apb_master_base_sequence extends uvm_sequence#(apb_master_transaction);
   endtask: body
 
 endclass: apb_master_base_sequence
+
+`endif

@@ -48,7 +48,6 @@ module test_top;
     preset_n <= 0;
     @ (negedge pclk);
     preset_n <= 1;
-    #100ns $finish;
   end
 
   initial begin
