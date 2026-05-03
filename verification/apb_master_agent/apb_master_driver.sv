@@ -76,14 +76,15 @@ task apb_master_driver::drive_read(apb_master_transaction tr);
   apb_vif.master_driver_cb.penable <= 1'b0;
   apb_vif.master_driver_cb.pwrite  <= 1'b0;
   apb_vif.master_driver_cb.paddr   <= tr.paddr;
-  apb_vif.master_driver_cb.pstrb   <= '0;
+  apb_vif.master_driver_cb.pstrb   <= tr.pstrb;   // should be 0
 
   // Access phase
   @ (apb_vif.master_driver_cb);
   apb_vif.master_driver_cb.penable <= 1'b1;
 
   @ (apb_vif.master_driver_cb iff apb_vif.master_driver_cb.pready);
-  apb_vif.master_driver_cb.psel  <= 1'b0;
+  apb_vif.master_driver_cb.psel    <= 1'b0;
+  apb_vif.master_driver_cb.penable <= 1'b0;
 endtask
 
 task apb_master_driver::drive_write(apb_master_transaction tr);
@@ -103,4 +104,5 @@ task apb_master_driver::drive_write(apb_master_transaction tr);
   @ (apb_vif.master_driver_cb iff apb_vif.master_driver_cb.pready);
   apb_vif.master_driver_cb.psel    <= 1'b0;
   apb_vif.master_driver_cb.pwdata  <= '0;
+  apb_vif.master_driver_cb.penable <= 1'b0;
 endtask

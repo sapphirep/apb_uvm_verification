@@ -12,6 +12,7 @@ VCS_OPTS   := -full64 -sverilog -timescale=1ns/1ps \
 
 SIMV_OPTS  := +UVM_TESTNAME=$(TEST) \
               +UVM_VERBOSITY=UVM_LOW \
+			  +UVM_NO_RELNOTES \
               +ntb_random_seed=$(SEED) \
 			  +fsdb+sva_success \
 			  +fsdb+autoflush \

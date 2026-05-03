@@ -9,9 +9,16 @@ class apb_master_transaction extends uvm_sequence_item;
   rand bit [`APB_DATA_WIDTH-1:0] data   ;
   rand bit [`APB_STRB_WIDTH-1:0] pstrb  ;
   bit                            pslverr;
+  bit                            aborted;
 
   constraint c_paddr {
     paddr <= 16'h10;
+  }
+
+  // PSTRB should be 0 for read
+  constraint c_pstrb {
+    solve op before pstrb;
+    (op == READ) -> (pstrb == 0);
   }
 
   function new(string name="apb_master_transaction");

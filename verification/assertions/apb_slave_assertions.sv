@@ -1,3 +1,6 @@
+`define INVALID_CTRL_SIG_ERROR(signal) \
+  $error(`"signal contains X/Z`");
+
 module apb_slave_assertions
 #(
   parameter  ADDR_WIDTH = 16,
@@ -32,18 +35,31 @@ module apb_slave_assertions
   aPSelVld:  assert property(valid_signal(psel)) else $error("PSEL is X/Z!");
 
   // PADDR, PENABLE, PWRITE, PSTRB, PWDATA (for active write data lanes) should be valid when PSEL = 1
-  aPAddrVld:   assert property(valid_control_signal(psel, paddr))  else $error("PADDR contains X/Z when PSEL=1!");
-  aPEnableVld: assert property(valid_control_signal(psel, penable))  else $error("PENABLE is X/Z when PSEL=1!");
-  aPWriteVld:  assert property(valid_control_signal(psel, pwrite)) else $error("PWRITE is X/Z when PSEL=1!");
-  aPStrbVld:   assert property(valid_control_signal((psel && pwrite), pstrb)) else $error("PSTRB contains X/Z when PSEL=1!");
+  aPAddrVld:   assert property(valid_control_signal(psel, paddr))             else `INVALID_CTRL_SIG_ERROR(paddr)
+  aPEnableVld: assert property(valid_control_signal(psel, penable))           else `INVALID_CTRL_SIG_ERROR(penable)
+  aPWriteVld:  assert property(valid_control_signal(psel, pwrite))            else `INVALID_CTRL_SIG_ERROR(pwrite)
+  aPStrbVld:   assert property(valid_control_signal((psel && pwrite), pstrb)) else `INVALID_CTRL_SIG_ERROR(pstrb)
 
   genvar i;
   generate
     for (i = 0; i < STRB_WIDTH; i++) begin: gen_pwrite_valid
-      pWrdataVld: assert property(valid_control_signal((psel && pwrite && pstrb[i]), pwdata[i*8 +: 8])) else $error("PWDATA byte lane %0d contains X/Z when PSEL=1!", i);
+      pWrdataVld: assert property(valid_control_signal((psel && pwrite && pstrb[i]), pwdata[i*8 +: 8])) 
+                    else $error("PWDATA byte lane %0d contains X/Z when PSEL=1!", i);
     end
   endgenerate
 
   // PREADY should be valid when PSEL = 1 and PENABLE = 1
-  aPReadyVld: assert property(valid_control_signal((psel && psenable), pready) else $error("PREADY is X/Z when PSEL=1 and PENABLE=1!");
+  aPReadyVld: assert property(valid_control_signal((psel && penable), pready)) else `INVALID_CTRL_SIG_ERROR(pready)
+
+  // PRDATA and PSLVERR should be valid when PSEL = 1, PENABLE = 1, and PREADY = 1
+  aPRdataVld:  assert property(valid_control_signal((psel && penable && pready), prdata))  else `INVALID_CTRL_SIG_ERROR(prdata)
+  aPSlverrVld: assert property(valid_control_signal((psel && penable && pready), pslverr)) else `INVALID_CTRL_SIG_ERROR(pslverr)
+
+  // For read transfers, PSTRB must be low
+  property pstrb_low_for_read;
+    @ (posedge pclk) disable iff (!preset_n)
+      psel && !pwrite |-> (pstrb == 0);
+  endproperty
+
+  aPstrbLowForRead: assert property(pstrb_low_for_read) else $error("PSTRB is not 0 during read!");
 endmodule: apb_slave_assertions
