@@ -17,25 +17,25 @@ interface apb_interface
   logic [DATA_WIDTH-1:0] prdata;
   logic                  pslverr;
 
-  clocking master_driver @(posedge pclk);
+  clocking master_driver_cb @(posedge pclk);
     default input #1step output #20ps;
     output paddr, psel, penable, pwrite, pwdata, pstrb;
     input  pready, prdata, pslverr;
-  endclocking: master_driver
+  endclocking: master_driver_cb
 
-  clocking master_monitor @(posedge pclk);
+  clocking master_monitor_cb @(posedge pclk);
     default input #1step output #20ps;
     input paddr, psel, penable, pwrite, pwdata, pstrb;
     input pready, prdata, pslverr;
-  endclocking: master_monitor
+  endclocking: master_monitor_cb
 
   modport APB_MASTER_DRIVER (
-    clocking master_driver,
+    clocking master_driver_cb,
     input preset_n
   );
 
   modport APB_MASTER_MONITOR (
-    clocking master_monitor,
+    clocking master_monitor_cb,
     input preset_n
   );
 

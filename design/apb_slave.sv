@@ -1,9 +1,8 @@
-module apb_slave 
-  import apb_design_pkg::*;
+module apb_slave
 #(
-  parameter  DATA_WIDTH = apb_design_pkg::APB_DATA_WIDTH,
-  parameter  ADDR_WIDTH = apb_design_pkg::APB_ADDR_WIDTH,
-  localparam STRB_WIDTH = apb_design_pkg::APB_STRB_WIDTH
+  parameter  ADDR_WIDTH = 16,
+  parameter  DATA_WIDTH = 32,
+  localparam STRB_WIDTH = DATA_WIDTH / 8
 )
 (   
   input   logic                  pclk,

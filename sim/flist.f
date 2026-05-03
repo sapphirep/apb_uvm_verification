@@ -1,6 +1,6 @@
 // --- RTL ---
 +incdir+../design
-../design/apb_design_pkg.sv
+//../design/apb_design_pkg.sv
 ../design/apb_slave.sv
 
 +incdir+../verification/interfaces
@@ -25,6 +25,10 @@
 // tests
 +incdir+../verification/tests
 ../verification/tests/apb_tests_pkg.sv
+
+// assertions
++incdir+../assertions
+../verification/assertions/apb_slave_assertions.sv
 
 // tb
 +incdir+../verification/tb

@@ -7,11 +7,15 @@ SEED       ?= $(shell echo $$RANDOM)
 VCS_OPTS   := -full64 -sverilog -timescale=1ns/1ps \
               +define+UVM_NO_DEPRECATED \
               -debug_access+all \
-			  -debug_pp -kdb +fsdb+all=on +vpi +v2k
+			  -assert svaext \
+			  -kdb +vpi +v2k
 
 SIMV_OPTS  := +UVM_TESTNAME=$(TEST) \
               +UVM_VERBOSITY=UVM_LOW \
               +ntb_random_seed=$(SEED) \
+			  +fsdb+sva_success \
+			  +fsdb+autoflush \
+              +fsdb+all=on \
               -l $(TEST)_$(SEED).log
 
 UVM_HOME = /home/ICer/uvm/1800.2-2020.3.1
